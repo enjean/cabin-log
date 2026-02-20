@@ -7,4 +7,15 @@ data class CreateVisitRequest(
     val name: String,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    val visitors: List<VisitVisitorRequest>,
+)
+
+data class VisitVisitorRequest(
+    val visitorId: Long,
+    val visitPeriods: List<VisitPeriodRequest>,
+)
+
+data class VisitPeriodRequest(
+    val startDate: LocalDate,
+    val endDate: LocalDate,
 )
