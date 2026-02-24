@@ -6,9 +6,6 @@ import java.time.LocalDate
 @Entity
 @Table(name = "visit_visitor_periods")
 class VisitVisitorPeriodEntity(
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "visit_visitor_id")
-    var visitVisitorEntity: VisitVisitorEntity,
     var startDate: LocalDate,
     var endDate: LocalDate,
 ) {

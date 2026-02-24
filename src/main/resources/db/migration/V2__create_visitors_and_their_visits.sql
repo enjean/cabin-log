@@ -18,6 +18,6 @@ CREATE TABLE IF NOT EXISTS visit_visitor_periods
 (
     id               SERIAL PRIMARY KEY,
     visit_visitor_id INTEGER REFERENCES visit_visitors (id),
-    start_date       DATE,
-    end_date         DATE
+    start_date       DATE NOT NULL,
+    end_date         DATE NOT NULL
 )

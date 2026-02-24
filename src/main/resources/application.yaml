@@ -1,3 +1,17 @@
 spring:
   application:
     name: cabinlog-backend
+#  jpa:
+#    properties:
+#      hibernate:
+#        format_sql: true
+#      show-sql: false # Optional: set to false to avoid duplicate unformatted logs
+#
+#logging:
+#  level:
+#    sql: DEBUG
+#    org:
+#      hibernate:
+#        orm:
+#          jdbc:
+#            bind: TRACE

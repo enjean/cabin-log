@@ -9,6 +9,7 @@ class VisitVisitorEntity(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "visit_id")
     var visit: VisitEntity,
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "visitor_id")
     var visitor: VisitorEntity,
@@ -16,4 +17,15 @@ class VisitVisitorEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0
+
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "visit_visitor_id")
+    private val _visitPeriods: MutableList<VisitVisitorPeriodEntity> = mutableListOf()
+
+    val visitPeriods: List<VisitVisitorPeriodEntity>
+        get() = _visitPeriods
+
+    fun addVisitPeriod(visitPeriod: VisitVisitorPeriodEntity) {
+        _visitPeriods.add(visitPeriod)
+    }
 }

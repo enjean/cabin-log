@@ -2,14 +2,13 @@ package enjean.cabinlog.visit
 
 import enjean.cabinlog.cabin.CabinEntity
 import enjean.cabinlog.cabin.CabinResponse
+import enjean.cabinlog.visitor.VisitorEntity
+import enjean.cabinlog.visitor.VisitorResponse
 import org.springframework.stereotype.Service
 
 @Service
-class VisitResponseGenerator(
-    private val visitRepository: VisitRepository,
-) {
-    fun generateVisitResponse(visitId: Long): VisitResponse {
-        val visit = visitRepository.getReferenceById(visitId)
+class VisitResponseGenerator {
+    fun generateVisitResponse(visit: VisitEntity): VisitResponse {
 
         return VisitResponse(
             id = visit.id,
@@ -17,7 +16,7 @@ class VisitResponseGenerator(
             name = visit.name,
             startDate = visit.startDate,
             endDate = visit.endDate,
-            visitVisitors = emptyList(), // TODO
+            visitVisitors = visit.visitVisitors.map { it.toVisitVisitorResponse() }
         )
     }
 
@@ -25,5 +24,23 @@ class VisitResponseGenerator(
         CabinResponse(
             id = id,
             name = name,
+        )
+
+    private fun VisitVisitorEntity.toVisitVisitorResponse() =
+        VisitVisitorResponse(
+            visitor = visitor.toVisitorResponse(),
+            visitPeriods = visitPeriods.map { it.toVisitPeriodResponse() }
+        )
+
+    private fun VisitorEntity.toVisitorResponse() =
+        VisitorResponse(
+            id = id,
+            name = name,
+        )
+
+    private fun VisitVisitorPeriodEntity.toVisitPeriodResponse() =
+        VisitPeriodResponse(
+            startDate = startDate,
+            endDate = endDate,
         )
 }
