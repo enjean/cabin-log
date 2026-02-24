@@ -13,7 +13,7 @@ class VisitService(
     private val visitResponseGenerator: VisitResponseGenerator,
 ) {
     fun createVisit(request: CreateVisitRequest): VisitResponse {
-        val cabin = cabinRepository.findByIdOrNull(request.cabinId)!!
+        val cabin = cabinRepository.getReferenceById(request.cabinId)
         val visit = VisitEntity(
             cabin = cabin,
             name = request.name,
