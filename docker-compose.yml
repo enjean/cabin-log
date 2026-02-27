@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:18.1
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "cabin_log"
+      POSTGRES_PASSWORD: localpassword
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+volumes:
+  pgdata:
