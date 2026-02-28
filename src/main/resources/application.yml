@@ -15,3 +15,14 @@ spring:
 #        orm:
 #          jdbc:
 #            bind: TRACE
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cabin_log
+    username: postgres
+    password: localpassword
+
