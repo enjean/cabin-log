@@ -10,5 +10,16 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql
 
+  cabin-log:
+    image: cabinlog-backend:0.0.1-SNAPSHOT
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/cabin_log
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=localpassword
+
 volumes:
   pgdata:

@@ -3,6 +3,7 @@ plugins {
 	kotlin("plugin.spring") version "1.9.25"
 	id("org.springframework.boot") version "3.5.10"
 	id("io.spring.dependency-management") version "1.1.7"
+	id("com.google.cloud.tools.jib") version "3.5.3"
 	kotlin("plugin.jpa") version "1.9.25"
 }
 
@@ -51,4 +52,22 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+jib {
+	from {
+		platforms {
+			platform {
+				architecture= "amd64"
+				os = "linux"
+			}
+			platform {
+				architecture = "arm64"
+				os = "linux"
+			}
+		}
+	}
+	to {
+		tags = setOf("latest", "$version")
+	}
 }
