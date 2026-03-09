@@ -2,9 +2,9 @@ package enjean.cabinlog.cabin
 
 import enjean.cabinlog.testutil.BaseIntegrationTest
 import org.apache.commons.lang3.RandomStringUtils
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
-import kotlin.test.assertEquals
 
 
 class CabinCrudTest : BaseIntegrationTest() {
@@ -21,8 +21,8 @@ class CabinCrudTest : BaseIntegrationTest() {
             request,
             CabinResponse::class.java,
         )
-        assertEquals(HttpStatus.CREATED, response.statusCode)
+        assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
         val cabinResponse = response.body!!
-        assertEquals(cabinName, cabinResponse.name)
+        assertThat(cabinResponse.name).isEqualTo(cabinName)
     }
 }
