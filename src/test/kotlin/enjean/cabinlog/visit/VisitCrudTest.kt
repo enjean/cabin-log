@@ -2,10 +2,10 @@ package enjean.cabinlog.visit
 
 import enjean.cabinlog.testutil.BaseIntegrationTest
 import org.apache.commons.lang3.RandomStringUtils
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
 import java.time.LocalDate
-import kotlin.test.assertEquals
 
 class VisitCrudTest : BaseIntegrationTest() {
 
@@ -52,29 +52,32 @@ class VisitCrudTest : BaseIntegrationTest() {
             request,
             VisitResponse::class.java,
         )
-        assertEquals(HttpStatus.CREATED, response.statusCode)
+        assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
         val visitResponse = response.body!!
-        assertEquals(visitName, visitResponse.name)
-        assertEquals(cabin, visitResponse.cabin)
-        assertEquals(startDate, visitResponse.startDate)
-        assertEquals(endDate, visitResponse.endDate)
+        assertThat(visitResponse.name).isEqualTo(visitName)
+        assertThat(visitResponse.cabin).isEqualTo(cabin)
+        assertThat(visitResponse.startDate).isEqualTo(startDate)
+        assertThat(visitResponse.endDate).isEqualTo(endDate)
 
-        assertEquals(3, visitResponse.visitVisitors.size)
+        assertThat(visitResponse.visitVisitors).hasSize(3)
 
         val visitVisitorResponseForVisitor1 = visitResponse.visitVisitors.first { it.visitor.id == visitor1.id }
-        assertEquals("Rand al'Thor", visitVisitorResponseForVisitor1.visitor.name)
-        assertEquals(1, visitVisitorResponseForVisitor1.visitPeriods.size)
-        assertEquals(VisitPeriodResponse(startDate, endDate), visitVisitorResponseForVisitor1.visitPeriods[0])
+        assertThat(visitVisitorResponseForVisitor1.visitor.name).isEqualTo("Rand al'Thor")
+        assertThat(visitVisitorResponseForVisitor1.visitPeriods).containsExactly(
+            VisitPeriodResponse(startDate, endDate),
+        )
 
         val visitVisitorResponseForVisitor2 = visitResponse.visitVisitors.first { it.visitor.id == visitor2.id }
-        assertEquals("Perrin Aybara", visitVisitorResponseForVisitor2.visitor.name)
-        assertEquals(1, visitVisitorResponseForVisitor2.visitPeriods.size)
-        assertEquals(VisitPeriodResponse(middleDate, middleDate), visitVisitorResponseForVisitor2.visitPeriods[0])
+        assertThat(visitVisitorResponseForVisitor2.visitor.name).isEqualTo("Perrin Aybara")
+        assertThat(visitVisitorResponseForVisitor2.visitPeriods).containsExactly(
+            VisitPeriodResponse(middleDate, middleDate),
+        )
 
         val visitVisitorResponseForVisitor3 = visitResponse.visitVisitors.first { it.visitor.id == visitor3.id }
-        assertEquals("Mat Cauthon", visitVisitorResponseForVisitor3.visitor.name)
-        assertEquals(2, visitVisitorResponseForVisitor3.visitPeriods.size)
-        assertEquals(VisitPeriodResponse(startDate, startDate), visitVisitorResponseForVisitor3.visitPeriods[0])
-        assertEquals(VisitPeriodResponse(endDate, endDate), visitVisitorResponseForVisitor3.visitPeriods[1])
+        assertThat(visitVisitorResponseForVisitor3.visitor.name).isEqualTo("Mat Cauthon")
+        assertThat(visitVisitorResponseForVisitor3.visitPeriods).containsExactly(
+            VisitPeriodResponse(startDate, startDate),
+            VisitPeriodResponse(endDate, endDate),
+        )
     }
 }

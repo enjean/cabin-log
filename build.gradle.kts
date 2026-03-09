@@ -35,6 +35,7 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:postgresql")
 	testImplementation("org.apache.commons:commons-lang3:3.20.0")
+	testImplementation("org.assertj:assertj-core:3.27.7")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
