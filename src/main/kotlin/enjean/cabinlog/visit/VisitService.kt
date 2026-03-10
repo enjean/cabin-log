@@ -1,15 +1,16 @@
 package enjean.cabinlog.visit
 
 import enjean.cabinlog.cabin.CabinRepository
-import enjean.cabinlog.visitor.VisitorRepository
-import org.springframework.data.repository.findByIdOrNull
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class VisitService(
     private val visitRepository: VisitRepository,
     private val cabinRepository: CabinRepository,
-    private val visitorRepository: VisitorRepository,
+    private val visitVisitorGenerator: VisitVisitorGenerator,
     private val visitResponseGenerator: VisitResponseGenerator,
 ) {
     fun createVisit(request: CreateVisitRequest): VisitResponse {
@@ -21,27 +22,16 @@ class VisitService(
             endDate = request.endDate,
         )
 
-        request.visitors.forEach { visitVisitorRequest ->
-            val visitor = visitorRepository.getReferenceById(visitVisitorRequest.visitorId)
-            val visitVisitorEntity = VisitVisitorEntity(
-                visitor = visitor,
-                visit = visit,
-            )
+        val visitVisitors = visitVisitorGenerator.generateVisitVisitorEntities(
+            visitorsInfo = request.visitors,
+            visit = visit,
+        )
+        visitVisitors.forEach { visit.addVisitor(it) }
 
-            visitVisitorRequest.visitPeriods.forEach { visitPeriod ->
-                visitVisitorEntity.addVisitPeriod(
-                    VisitVisitorPeriodEntity(
-                        startDate = visitPeriod.startDate,
-                        endDate = visitPeriod.endDate,
-                    )
-                )
-            }
-
-            visit.addVisitor(visitVisitorEntity)
-        }
-
+        logger.info { "Saving visit $visit"}
         val savedVisit = visitRepository.save(visit)
 
+        logger.info { "Saving visits ${savedVisit.visitVisitors}"}
         return visitResponseGenerator.generateVisitResponse(savedVisit)
     }
 }

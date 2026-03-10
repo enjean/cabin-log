@@ -27,23 +27,21 @@ class VisitCrudTest : BaseIntegrationTest() {
             cabinId = cabin.id,
             startDate = startDate,
             endDate = endDate,
-            visitors = listOf(
-                VisitVisitorRequest(
-                    visitorId = visitor1.id,
-                    visitPeriods = listOf(VisitPeriodRequest(startDate = startDate, endDate = endDate)),
-                ),
-                VisitVisitorRequest(
-                    visitorId = visitor2.id,
-                    visitPeriods = listOf(VisitPeriodRequest(startDate = middleDate, endDate = middleDate)),
-                ),
-                VisitVisitorRequest(
-                    visitorId = visitor3.id,
-                    visitPeriods =
-                        listOf(
+            visitors = VisitorsInfo(
+                fullTimeVisitorIds = listOf(visitor1.id),
+                partialVisitors = listOf(
+                    VisitVisitorRequest(
+                        id = visitor2.id,
+                        visitPeriods = listOf(VisitPeriodRequest(startDate = middleDate, endDate = middleDate)),
+                    ),
+                    VisitVisitorRequest(
+                        id = visitor3.id,
+                        visitPeriods = listOf(
                             VisitPeriodRequest(startDate = startDate, endDate = startDate),
-                            VisitPeriodRequest(startDate = endDate, endDate = endDate),
+                            VisitPeriodRequest(startDate = endDate, endDate = endDate)
                         ),
-                ),
+                    )
+                )
             )
         )
 
