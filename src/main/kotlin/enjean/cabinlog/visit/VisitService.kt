@@ -28,10 +28,9 @@ class VisitService(
         )
         visitVisitors.forEach { visit.addVisitor(it) }
 
-        logger.info { "Saving visit $visit"}
         val savedVisit = visitRepository.save(visit)
 
-        logger.info { "Saving visits ${savedVisit.visitVisitors}"}
+        logger.debug { "Saved visit $savedVisit"}
         return visitResponseGenerator.generateVisitResponse(savedVisit)
     }
 }
