@@ -10,7 +10,12 @@ data class VisitResponse(
     val name: String,
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val visitVisitors: List<VisitVisitorResponse>,
+    val visitors: VisitVisitorsResponse,
+)
+
+data class VisitVisitorsResponse(
+    val fullTimeVisitors: List<VisitorResponse>,
+    val partTimeVisitors: List<VisitVisitorResponse>,
 )
 
 data class VisitVisitorResponse(
