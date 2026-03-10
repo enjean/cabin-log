@@ -24,7 +24,6 @@ class VisitCrudTest : BaseIntegrationTest() {
 
         val request = CreateVisitRequest(
             name = visitName,
-            cabinId = cabin.id,
             startDate = startDate,
             endDate = endDate,
             visitors = VisitorsInfo(
@@ -46,7 +45,7 @@ class VisitCrudTest : BaseIntegrationTest() {
         )
 
         val response = testRestTemplate.postForEntity(
-            "/visits",
+            "/cabins/${cabin.id}/visits",
             request,
             VisitResponse::class.java,
         )
