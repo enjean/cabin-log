@@ -3,15 +3,19 @@ package enjean.cabinlog.visit
 import java.time.LocalDate
 
 data class CreateVisitRequest(
-    val cabinId: Long,
     val name: String,
     val startDate: LocalDate,
     val endDate: LocalDate,
-    val visitors: List<VisitVisitorRequest>,
+    val visitors: VisitorsInfo,
+)
+
+data class VisitorsInfo(
+    val fullTimeVisitorIds: List<Long> = emptyList(),
+    val partialVisitors: List<VisitVisitorRequest> = emptyList(),
 )
 
 data class VisitVisitorRequest(
-    val visitorId: Long,
+    val id: Long,
     val visitPeriods: List<VisitPeriodRequest>,
 )
 

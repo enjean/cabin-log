@@ -24,31 +24,28 @@ class VisitCrudTest : BaseIntegrationTest() {
 
         val request = CreateVisitRequest(
             name = visitName,
-            cabinId = cabin.id,
             startDate = startDate,
             endDate = endDate,
-            visitors = listOf(
-                VisitVisitorRequest(
-                    visitorId = visitor1.id,
-                    visitPeriods = listOf(VisitPeriodRequest(startDate = startDate, endDate = endDate)),
-                ),
-                VisitVisitorRequest(
-                    visitorId = visitor2.id,
-                    visitPeriods = listOf(VisitPeriodRequest(startDate = middleDate, endDate = middleDate)),
-                ),
-                VisitVisitorRequest(
-                    visitorId = visitor3.id,
-                    visitPeriods =
-                        listOf(
+            visitors = VisitorsInfo(
+                fullTimeVisitorIds = listOf(visitor1.id),
+                partialVisitors = listOf(
+                    VisitVisitorRequest(
+                        id = visitor2.id,
+                        visitPeriods = listOf(VisitPeriodRequest(startDate = middleDate, endDate = middleDate)),
+                    ),
+                    VisitVisitorRequest(
+                        id = visitor3.id,
+                        visitPeriods = listOf(
                             VisitPeriodRequest(startDate = startDate, endDate = startDate),
-                            VisitPeriodRequest(startDate = endDate, endDate = endDate),
+                            VisitPeriodRequest(startDate = endDate, endDate = endDate)
                         ),
-                ),
+                    )
+                )
             )
         )
 
         val response = testRestTemplate.postForEntity(
-            "/visits",
+            "/cabins/${cabin.id}/visits",
             request,
             VisitResponse::class.java,
         )
@@ -59,21 +56,19 @@ class VisitCrudTest : BaseIntegrationTest() {
         assertThat(visitResponse.startDate).isEqualTo(startDate)
         assertThat(visitResponse.endDate).isEqualTo(endDate)
 
-        assertThat(visitResponse.visitVisitors).hasSize(3)
+        assertThat(visitResponse.visitors.fullTimeVisitors).hasSize(1)
+        val fullTimeVisitor = visitResponse.visitors.fullTimeVisitors[0]
+        assertThat(fullTimeVisitor.name).isEqualTo("Rand al'Thor")
 
-        val visitVisitorResponseForVisitor1 = visitResponse.visitVisitors.first { it.visitor.id == visitor1.id }
-        assertThat(visitVisitorResponseForVisitor1.visitor.name).isEqualTo("Rand al'Thor")
-        assertThat(visitVisitorResponseForVisitor1.visitPeriods).containsExactly(
-            VisitPeriodResponse(startDate, endDate),
-        )
+        assertThat(visitResponse.visitors.partTimeVisitors).hasSize(2)
 
-        val visitVisitorResponseForVisitor2 = visitResponse.visitVisitors.first { it.visitor.id == visitor2.id }
+        val visitVisitorResponseForVisitor2 = visitResponse.visitors.partTimeVisitors.first { it.visitor.id == visitor2.id }
         assertThat(visitVisitorResponseForVisitor2.visitor.name).isEqualTo("Perrin Aybara")
         assertThat(visitVisitorResponseForVisitor2.visitPeriods).containsExactly(
             VisitPeriodResponse(middleDate, middleDate),
         )
 
-        val visitVisitorResponseForVisitor3 = visitResponse.visitVisitors.first { it.visitor.id == visitor3.id }
+        val visitVisitorResponseForVisitor3 = visitResponse.visitors.partTimeVisitors.first { it.visitor.id == visitor3.id }
         assertThat(visitVisitorResponseForVisitor3.visitor.name).isEqualTo("Mat Cauthon")
         assertThat(visitVisitorResponseForVisitor3.visitPeriods).containsExactly(
             VisitPeriodResponse(startDate, startDate),

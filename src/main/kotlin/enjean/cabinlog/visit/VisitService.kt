@@ -1,19 +1,20 @@
 package enjean.cabinlog.visit
 
 import enjean.cabinlog.cabin.CabinRepository
-import enjean.cabinlog.visitor.VisitorRepository
-import org.springframework.data.repository.findByIdOrNull
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.stereotype.Service
+
+private val logger = KotlinLogging.logger {}
 
 @Service
 class VisitService(
     private val visitRepository: VisitRepository,
     private val cabinRepository: CabinRepository,
-    private val visitorRepository: VisitorRepository,
+    private val visitVisitorGenerator: VisitVisitorGenerator,
     private val visitResponseGenerator: VisitResponseGenerator,
 ) {
-    fun createVisit(request: CreateVisitRequest): VisitResponse {
-        val cabin = cabinRepository.getReferenceById(request.cabinId)
+    fun createVisit(cabinId: Long, request: CreateVisitRequest): VisitResponse {
+        val cabin = cabinRepository.getReferenceById(cabinId)
         val visit = VisitEntity(
             cabin = cabin,
             name = request.name,
@@ -21,27 +22,15 @@ class VisitService(
             endDate = request.endDate,
         )
 
-        request.visitors.forEach { visitVisitorRequest ->
-            val visitor = visitorRepository.getReferenceById(visitVisitorRequest.visitorId)
-            val visitVisitorEntity = VisitVisitorEntity(
-                visitor = visitor,
-                visit = visit,
-            )
-
-            visitVisitorRequest.visitPeriods.forEach { visitPeriod ->
-                visitVisitorEntity.addVisitPeriod(
-                    VisitVisitorPeriodEntity(
-                        startDate = visitPeriod.startDate,
-                        endDate = visitPeriod.endDate,
-                    )
-                )
-            }
-
-            visit.addVisitor(visitVisitorEntity)
-        }
+        val visitVisitors = visitVisitorGenerator.generateVisitVisitorEntities(
+            visitorsInfo = request.visitors,
+            visit = visit,
+        )
+        visitVisitors.forEach { visit.addVisitor(it) }
 
         val savedVisit = visitRepository.save(visit)
 
+        logger.debug { "Saved visit $savedVisit"}
         return visitResponseGenerator.generateVisitResponse(savedVisit)
     }
 }
