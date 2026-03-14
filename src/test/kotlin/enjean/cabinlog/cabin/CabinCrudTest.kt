@@ -4,6 +4,7 @@ import enjean.cabinlog.testutil.BaseIntegrationTest
 import org.apache.commons.lang3.RandomStringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 
 
@@ -16,10 +17,9 @@ class CabinCrudTest : BaseIntegrationTest() {
             name = cabinName,
         )
 
-        val response = testRestTemplate.postForEntity(
+        val response = testRestTemplate.postForEntity<CabinResponse>(
             "/cabins",
             request,
-            CabinResponse::class.java,
         )
         assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
         val cabinResponse = response.body!!

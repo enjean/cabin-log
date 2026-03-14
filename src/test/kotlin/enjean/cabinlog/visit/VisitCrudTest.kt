@@ -4,6 +4,7 @@ import enjean.cabinlog.testutil.BaseIntegrationTest
 import org.apache.commons.lang3.RandomStringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 import java.time.LocalDate
 
@@ -44,10 +45,9 @@ class VisitCrudTest : BaseIntegrationTest() {
             )
         )
 
-        val response = testRestTemplate.postForEntity(
+        val response = testRestTemplate.postForEntity<VisitResponse>(
             "/cabins/${cabin.id}/visits",
             request,
-            VisitResponse::class.java,
         )
         assertThat(response.statusCode).isEqualTo(HttpStatus.CREATED)
         val visitResponse = response.body!!
