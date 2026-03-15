@@ -2,7 +2,7 @@ package enjean.cabinlog.visit
 
 import enjean.cabinlog.cabin.CabinRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.springframework.http.ResponseEntity
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
@@ -50,5 +50,12 @@ class VisitService(
             )
         }
         return VisitSummariesResponse(visitSummaries)
+    }
+
+    fun getVisit(id: Long): VisitResponse {
+        val visit = visitRepository.findByIdOrNull(id) ?:
+            throw IllegalStateException("Visit with id $id not found") // Later could add more sophisticated error handling to make sure this returns 404
+
+        return visitResponseGenerator.generateVisitResponse(visit)
     }
 }

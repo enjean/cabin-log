@@ -4,6 +4,7 @@ import enjean.cabinlog.testutil.BaseIntegrationTest
 import org.apache.commons.lang3.RandomStringUtils
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 import java.time.LocalDate
@@ -74,5 +75,12 @@ class VisitCrudTest : BaseIntegrationTest() {
             VisitPeriodResponse(startDate, startDate),
             VisitPeriodResponse(endDate, endDate),
         )
+
+        val getVisitResponseEntity = testRestTemplate.getForEntity<VisitResponse>("/visits/${visitResponse.id}")
+        assertThat(getVisitResponseEntity.statusCode).isEqualTo(HttpStatus.OK)
+        val getVisitResponse = getVisitResponseEntity.body!!
+        assertThat(getVisitResponse.name).isEqualTo(visitName)
+        assertThat(getVisitResponse.visitors.fullTimeVisitors).hasSize(1)
+        assertThat(getVisitResponse.visitors.partTimeVisitors).hasSize(2)
     }
 }
