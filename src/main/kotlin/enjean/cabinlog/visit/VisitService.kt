@@ -2,6 +2,7 @@ package enjean.cabinlog.visit
 
 import enjean.cabinlog.cabin.CabinRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 private val logger = KotlinLogging.logger {}
@@ -32,5 +33,22 @@ class VisitService(
 
         logger.debug { "Saved visit $savedVisit"}
         return visitResponseGenerator.generateVisitResponse(savedVisit)
+    }
+
+    fun getVisits(cabinId: Long, year: Int?): VisitSummariesResponse {
+        val visits = visitRepository.findByCabinIdAndYear(cabinId = cabinId, year = year)
+        val visitSummaries = visits.map { visitEntity ->
+            VisitSummaryResponse(
+                id = visitEntity.id,
+                name = visitEntity.name,
+                startDate = visitEntity.startDate,
+                endDate = visitEntity.endDate,
+                visitors = visitEntity.visitVisitors.map { visitVisitorEntity ->
+                    val visitor = visitVisitorEntity.visitor
+                    VisitSummaryVisitorResponse(id = visitor.id, name = visitor.name)
+                }.sortedBy { it.name }
+            )
+        }
+        return VisitSummariesResponse(visitSummaries)
     }
 }
