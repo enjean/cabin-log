@@ -3,12 +3,16 @@ package enjean.cabinlog.cabin
 import enjean.cabinlog.visit.CreateVisitRequest
 import enjean.cabinlog.visit.VisitResponse
 import enjean.cabinlog.visit.VisitService
+import enjean.cabinlog.visit.VisitSummariesResponse
+import enjean.cabinlog.visit.VisitSummaryResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 
@@ -43,5 +47,14 @@ class CabinController(
         val visitResponse = visitService.createVisit(cabinId = cabinId, request = createVisitRequest)
 
         return ResponseEntity.status(HttpStatus.CREATED).body(visitResponse)
+    }
+
+    @GetMapping("/{cabinId}/visits")
+    fun getVisits(
+        @PathVariable cabinId: Long,
+        @RequestParam(required = false) year: Int?
+    ): ResponseEntity<VisitSummariesResponse> {
+        val visits = visitService.getVisits(cabinId = cabinId, year = year)
+        return ResponseEntity.ok(visits)
     }
 }
