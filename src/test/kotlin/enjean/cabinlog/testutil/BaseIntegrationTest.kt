@@ -35,9 +35,8 @@ abstract class BaseIntegrationTest {
 
     fun createTestVisitor(cabinId: Long, name: String): VisitorResponse {
         val response = testRestTemplate.postForEntity<VisitorResponse>(
-            "/visitors",
+            "/cabins/$cabinId/visitors",
             CreateVisitorRequest(
-                cabinId = cabinId,
                 name = name,
             ),
         )

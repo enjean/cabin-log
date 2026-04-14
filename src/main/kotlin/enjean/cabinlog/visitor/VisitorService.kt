@@ -8,11 +8,11 @@ class VisitorService(
     private val visitorRepository: VisitorRepository,
     private val cabinRepository: CabinRepository,
 ) {
-    fun createVisitor(createVisitorRequest: CreateVisitorRequest): VisitorResponse {
+    fun createVisitor(cabinId: Long, createVisitorRequest: CreateVisitorRequest): VisitorResponse {
         val visitor = visitorRepository.save(
             VisitorEntity(
                 name = createVisitorRequest.name,
-                cabin = cabinRepository.getReferenceById(createVisitorRequest.cabinId),
+                cabin = cabinRepository.getReferenceById(cabinId),
             )
         )
         return VisitorResponse(

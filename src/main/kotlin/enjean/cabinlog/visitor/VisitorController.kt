@@ -12,10 +12,5 @@ import org.springframework.web.bind.annotation.RestController
 class VisitorController(
     private val visitorService: VisitorService,
 ) {
-    @PostMapping
-    fun createVisitor(@RequestBody createVisitorRequest: CreateVisitorRequest): ResponseEntity<VisitorResponse> {
-        val visitorResponse = visitorService.createVisitor(createVisitorRequest)
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(visitorResponse)
-    }
 }
