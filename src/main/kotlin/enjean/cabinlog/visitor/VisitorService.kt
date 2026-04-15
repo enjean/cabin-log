@@ -1,6 +1,7 @@
 package enjean.cabinlog.visitor
 
 import enjean.cabinlog.cabin.CabinRepository
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,5 +20,15 @@ class VisitorService(
             id = visitor.id,
             name = visitor.name,
         )
+    }
+
+    fun getVisitors(cabinId: Long): List<VisitorResponse> {
+        val visitorEntities = visitorRepository.findAllByCabinId(cabinId)
+        return visitorEntities.map { v ->
+            VisitorResponse(
+                id = v.id,
+                name = v.name,
+            )
+        }
     }
 }

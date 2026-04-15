@@ -8,6 +8,7 @@ import enjean.cabinlog.visit.VisitSummaryResponse
 import enjean.cabinlog.visitor.CreateVisitorRequest
 import enjean.cabinlog.visitor.VisitorResponse
 import enjean.cabinlog.visitor.VisitorService
+import enjean.cabinlog.visitor.VisitorsResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -73,5 +74,13 @@ class CabinController(
         )
 
         return ResponseEntity.status(HttpStatus.CREATED).body(visitorResponse)
+    }
+
+    @GetMapping("/{cabinId}/visitors")
+    fun getVisitors(
+        @PathVariable cabinId: Long,
+    ): ResponseEntity<VisitorsResponse> {
+        val visitors = visitorService.getVisitors(cabinId = cabinId)
+        return ResponseEntity.ok(VisitorsResponse(visitors))
     }
 }

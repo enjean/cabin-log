@@ -49,7 +49,7 @@ class GetAllVisitsIntegrationTest : BaseIntegrationTest() {
 
         val response = testRestTemplate.getForEntity<VisitSummariesResponse>("/cabins/${cabin.id}/visits")
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
-        val visitSummariesResponse = checkNotNull(response.getBody())
+        val visitSummariesResponse = checkNotNull(response.body)
         assertThat(visitSummariesResponse.visitSummaries).hasSize(4)
 
         assertThat(visitSummariesResponse.visitSummaries.map { it.name })
