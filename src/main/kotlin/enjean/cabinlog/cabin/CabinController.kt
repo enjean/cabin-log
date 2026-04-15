@@ -5,6 +5,10 @@ import enjean.cabinlog.visit.VisitResponse
 import enjean.cabinlog.visit.VisitService
 import enjean.cabinlog.visit.VisitSummariesResponse
 import enjean.cabinlog.visit.VisitSummaryResponse
+import enjean.cabinlog.visitor.CreateVisitorRequest
+import enjean.cabinlog.visitor.VisitorResponse
+import enjean.cabinlog.visitor.VisitorService
+import enjean.cabinlog.visitor.VisitorsResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 class CabinController(
     private val cabinService: CabinService,
     private val visitService: VisitService,
+    private val visitorService: VisitorService,
 ) {
     @PostMapping
     fun createCabin(@RequestBody createCabinRequest: CreateCabinRequest): ResponseEntity<CabinResponse> {
@@ -56,5 +61,26 @@ class CabinController(
     ): ResponseEntity<VisitSummariesResponse> {
         val visits = visitService.getVisits(cabinId = cabinId, year = year)
         return ResponseEntity.ok(visits)
+    }
+
+    @PostMapping("/{cabinId}/visitors")
+    fun createVisitor(
+        @PathVariable cabinId: Long,
+        @RequestBody createVisitorRequest: CreateVisitorRequest
+    ): ResponseEntity<VisitorResponse> {
+        val visitorResponse = visitorService.createVisitor(
+            cabinId = cabinId,
+            createVisitorRequest = createVisitorRequest,
+        )
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(visitorResponse)
+    }
+
+    @GetMapping("/{cabinId}/visitors")
+    fun getVisitors(
+        @PathVariable cabinId: Long,
+    ): ResponseEntity<VisitorsResponse> {
+        val visitors = visitorService.getVisitors(cabinId = cabinId)
+        return ResponseEntity.ok(VisitorsResponse(visitors))
     }
 }

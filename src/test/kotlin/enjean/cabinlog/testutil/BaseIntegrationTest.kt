@@ -22,11 +22,11 @@ abstract class BaseIntegrationTest {
     @Autowired
     lateinit var testRestTemplate: TestRestTemplate
 
-    fun createTestCabin(): CabinResponse {
+    fun createTestCabin(name: String = "Test Cabin"): CabinResponse {
         val response = testRestTemplate.postForEntity<CabinResponse>(
             "/cabins",
             CreateCabinRequest(
-                name = "Test Cabin",
+                name = name,
             ),
         )
         assert(response.statusCode.is2xxSuccessful)
@@ -35,9 +35,8 @@ abstract class BaseIntegrationTest {
 
     fun createTestVisitor(cabinId: Long, name: String): VisitorResponse {
         val response = testRestTemplate.postForEntity<VisitorResponse>(
-            "/visitors",
+            "/cabins/$cabinId/visitors",
             CreateVisitorRequest(
-                cabinId = cabinId,
                 name = name,
             ),
         )
